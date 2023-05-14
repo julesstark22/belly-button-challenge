@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>D3.js Example</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+  </head>
+  <body>
+    <h1>Part 1 and 2</h1>
+    <div id="chart"></div>
+    <script>
+      d3.json("https://2u-data-curriculum-team.s3.amazonaws.com/dataviz-classroom/v1.1/14-Interactive-Web-Visualizations/02-Homework/samples.json")
+        .then(data => {
+          const sampleValues = data.sample_values;
+          const otuIds = data.otu_ids;
+          const otuLabels = data.otu_labels;
+          const top10SampleValues = sampleValues.slice(0, 10);
+          const top10OtuIds = otuIds.slice(0, 10);
+          const top10OtuLabels = otuLabels.slice(0, 10);
+          const svg = d3.select("#chart")
+            .append("svg")
+            .attr("width", 600) // Set width
+            .attr("height", 400); // Set height
+          const xScale = d3.scaleLinear()
+            .domain([0, d3.max(top10SampleValues)])
+            .range([0, 500]); // Set the range of the x-axis values
+
+          const yScale = d3.scaleBand()
+            .domain(top10OtuIds)
+            .range([0, 300]) // Set the range of the y-axis values
+            .padding(0.1); // Set padding between bars
+          svg.selectAll("rect")
+            .data(top10SampleValues)
+            .join("rect")
+            .attr("x", 0)
+            .attr("y", (_, i) => yScale(top10OtuIds[i]))
+            .attr("width", d => xScale(d))
+            .attr("height", yScale.bandwidth())
+            .attr("fill", "steelblue");
+          svg.selectAll("text")
+            .data(top10SampleValues)
+            .join("text")
+            .text(d => d)
+            .attr("x", d => xScale(d) + 5) // Adjust the position of the labels
+            .attr("y", (_, i) => yScale(top10OtuIds[i]) + yScale.bandwidth() / 2)
+            .attr("dy", "0.35em") // Vertical alignment
+            .attr("font-size", "12px") // Set the font size of the labels
+            .attr("fill", "white"); // Set
+        })
+        .catch(error => {
+          console.log("Error loading the JSON file:", error);
+        });
+    </script>
+    <hr>
+    <h1>Part 3</h1>
+    <div id="chart2"></div>
+    <script>
+      d3.json("https://2u-data-curriculum-team.s3.amazonaws.com/dataviz-classroom/v1.1/14-Interactive-Web-Visualizations/02-Homework/samples.json")
+        .then(data => {
+          const otuIds = data.otu_ids;
+          const sampleValues = data.sample_values;
+          const otuLabels = data.otu_labels;
+          const svg = d3.select("#chart2")
+            .append("svg")
+            .attr("width", 600) // Set width
+            .attr("height", 400); // Set height
+
+          const xScale = d
